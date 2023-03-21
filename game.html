@@ -3,7 +3,6 @@
 	<head>
 		<title>Incrementality</title>
 		<meta charset="utf-8">
-		<script src="game.js"></script>
 		<link rel="stylesheet" href="style.css">
 	</head>
 	
@@ -12,5 +11,12 @@
 		<h2>The definitely not satire incremental game (version 1)</h2>
 		<hr>
 		<p id="units">Units not calculated</p>
+		
+		
+		<!-- i tried everything to make this run after the DOM loaded without using a timeout function. it was hopeless so i moved it here -->
+		<script src="game.js"></script>
+		<div id="incs">
+			
+		</div>
 	</body>
 </html>
