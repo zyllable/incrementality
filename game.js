@@ -35,6 +35,7 @@ function main() {
 	units = 0n;
 	updater = setInterval(updateUnits, 100);
 	document.getElementById("theButton").onclick = modifyUnits(1n);
+	document.getElementById("nextLevel").onclick = newGenLevel();
 }
 
 function updateUnits() {
@@ -107,5 +108,5 @@ function calcPrice(level, amount) {
 }
 
 function calcUpgradePrice(level, amount); {
-	return 	2 ** (amount ** (level - 1));
+	return 	2 ** (amount ** (level + 1));
 }
