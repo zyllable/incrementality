@@ -34,6 +34,7 @@ function main() {
 	incrementers = [0,1];
 	units = 0n;
 	updater = setInterval(updateUnits, 100)
+	document.getElementById("theButton").onclick = modifyUnits(1n);
 }
 
 function updateUnits() {
