@@ -1,9 +1,11 @@
 "USE STRICT"
-document.onload = main();
 var units; //global variable so y'all can mess around with it (and so i dont have to link things together in unholy ways
 var incrementers
 var unitDisplay
-var leftovers = 0n
+var leftovers = 0
+var updater;
+console.log(leftovers)
+document.onload = main();
 /*
 	notes since i dont have anywhere else for documentation (yet)
 	
@@ -29,22 +31,22 @@ var leftovers = 0n
 
 function main() {
 	unitDisplay = document.getElementById("units");
-	incrementers = [0n,1n];
+	incrementers = [0,1];
 	units = 0n;
-	var updater = setInterval(updateUnits(), 1000)
+	updater = setInterval(updateUnits, 100)
 }
 
 function updateUnits() {
 	var change = 0n;
-	var changeTemp = 0n;
+	var changeTemp = 0;
 	for (var i = 0; i < incrementers.length; i += 2) {
 		var n = incrementers[i];
 		var u = incrementers[i + 1];
-		changeTemp += (n * (2n ** (BigInt(i) / 2n) / 10n)) * /*base formula*/ (1n + (u - 1n) / u); //upgrades
-		console.log(Object.getPrototypeOf(leftovers))
-		leftovers += changeTemp % 1n;
-		change += changeTemp + bigFloor(leftovers);
-		leftovers = leftovers % 1n;
+		changeTemp = (n * (2 ** (i / 2) / 100)) * /*base formula*/ (1 + (u - 1) / u); //upgrades
+		console.log(changeTemp)
+		leftovers += changeTemp % 1;
+		change += BigInt(Math.floor(changeTemp) + Math.floor(leftovers));
+		leftovers = leftovers % 1;
 	}
 	modifyUnits(change);
 }
@@ -60,10 +62,20 @@ function displayUnits() {
 
 function newGenLevel() {
 	incrementerContainer = document.getElementById("incs");
+	var newGenElement = document.createElement("div");
+	
+	newGenElement.appendChild()
+	
+	incrementerContainer.appendChild(newGenElement)
 }
 
 function buyGen() {
-	
+	var level = 0
+	var cost = 10n //placeholders for now
+	if (cost <= units) {
+		modifyUnits(cost * -1n);
+		incrementers[level * 2] = incrementers[level * 2] + 1
+	}
 }
 
 function calcPrices() {
