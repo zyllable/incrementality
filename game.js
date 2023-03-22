@@ -80,17 +80,27 @@ function newGenLevel() {
 		
 		temp[4] = document.createElement("button"); //4
 		temp[4].innerText = "Buy incrementer for: " + calcPrice(level, amount);
+		temp[4].setAttribute("data-level", level);
 		
 		temp[5] = document.createElement("br"); //5
 		
 		temp[6] = document.createElement("button"); //6
-		temp[6].innerText = "Upgrade for: " + calcUpgradePrice();
+		temp[6].innerText = "Upgrade for: " + calcUpgradePrice(level, amount);
 		
-		newGenElement.appendChild(temp); //todo: test if this works or if i have to convert it to a chunk of elements
+		newGenElement.appendChild(temp); //todo: test if this works or if i have to convert it to a chunk of elements, it i do, it will be a seperate function
 	
 		containers.push(incrementerContainer);
 		incrementerContainer.appendChild(newGenElement);
 	}
+}
+
+function buyGenButton() {
+	var level = 0
+	var amount = 0
+}
+
+function buyUpgrade() {
+	
 }
 
 function buyGen(level, amount) {
@@ -104,9 +114,13 @@ function buyGen(level, amount) {
 }
 
 function calcPrice(level, amount) {
-	return 2 ** (amount * level);
+	return 2n ** BigNumber(amount * level);
 }
 
 function calcUpgradePrice(level, amount); {
-	return 	2 ** (amount ** (level + 1));
+	return 	2n ** BigNumber(amount ** (level + 1));
+}
+
+function getAmounts(level) { //level starts at 0
+	return [incrementers[level * 2], incrementers[level * 2 + 1]]
 }
