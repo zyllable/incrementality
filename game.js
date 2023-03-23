@@ -30,6 +30,10 @@ window.onload = function(){main()};
 	incrementer output = 2^(L-1) every 10 seconds, floored when combined with upgrade percentages, figure out calculation logic later
 	purchase upgrade = 2^(u^(L+1)) (1 upgrade automatically for logic reasons)
 	upgrade boost = u - 1 / u
+	
+	so minor problem with the old upgrade logic (above), it turns out that the max bignumber limit is ~157,000 digits
+	
+	so it will be the same as incrementer pricing, with n being replaced by u
 */
 
 function main() {
@@ -136,7 +140,7 @@ function calcPrice(level, amount) {
 }
 
 function calcUpgradePrice(level, amount) {
-	return 	2n ** BigInt(amount ** (level + 1));
+	return 	2n ** BigInt(amount * level);
 }
 
 function getAmounts(level) { //level starts at 0

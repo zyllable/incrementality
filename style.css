@@ -1,3 +1,23 @@
+@font-face {
+	font-family: notoSansMono;
+	src: url("./notomono.ttf");
+}
+* {
+	font-family: notoSansMono, monospace
+}
 #units {
 	overflow-wrap: anywhere;
+}
+div {
+	padding: 2px;
+	margin-top: 2px;
+	border: solid;
+	width: fit-content;
+	max-width: 100%;
+	overflow: auto;
+}
+#incs {
+	padding: none;
+	margin-top: none;
+	border: none;
 }
