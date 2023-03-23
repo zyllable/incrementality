@@ -48,6 +48,7 @@ function main() {
 }
 
 function updateUnits() {
+	try {
 	var change = 0n;
 	var changeTemp = 0;
 	for (var i = 0; i < incrementers.length; i += 2) {
@@ -60,6 +61,10 @@ function updateUnits() {
 		leftovers = leftovers % 1;
 	}
 	modifyUnits(change);
+	} catch (e) {
+		document.write("congratulations, you did it. you \"beat\" the game. you broke it. you did something that caused the page to break. im saying you won because you probably went past your browser's memory safeguards on the larger number type (from my experience its around 150,000 digits). now that you've won, go outside, talk to people, do something in your life other than watching this number pointlessly increase. <br>-Zyllable, creator of this god forsaken \"game\"")
+		clearInterval(updater);
+	}
 }
 
 function modifyUnits(change) {
