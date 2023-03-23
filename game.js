@@ -5,7 +5,10 @@ var containers = [];
 var unitDisplay;
 var leftovers = 0;
 var updater;
-document.onload = main();
+var maxLevel = 0;
+var incrementerContainer
+var upgradeButton
+window.onload = function(){main()};
 /*
 	notes since i dont have anywhere else for documentation (yet)
 	
@@ -31,11 +34,13 @@ document.onload = main();
 
 function main() {
 	unitDisplay = document.getElementById("units");
+	incrementerContainer = document.getElementById("incs");
 	incrementers = [0,1];
 	units = 0n;
 	updater = setInterval(updateUnits, 100);
-	document.getElementById("theButton").onclick = modifyUnits(1n);
-	document.getElementById("nextLevel").onclick = newGenLevel();
+	document.getElementById("theButton").onclick = function() {modifyUnits(1n)};
+	upgradeButton = document.getElementById("nextLevel")
+	upgradeButton.onclick = function() {newGenLevel(maxLevel)};
 }
 
 function updateUnits() {
@@ -46,6 +51,7 @@ function updateUnits() {
 		var u = incrementers[i + 1];
 		changeTemp = (n * (2 ** (i / 2) / 100)) * /*base formula*/ (1 + (u - 1) / u); //upgrades
 		leftovers += changeTemp % 1;
+		//console.log(leftovers + " " + changeTemp)
 		change += BigInt(Math.floor(changeTemp) + Math.floor(leftovers));
 		leftovers = leftovers % 1;
 	}
@@ -61,51 +67,63 @@ function displayUnits() {
 	unitDisplay.innerText = "Units: " + units.toString();
 }
 
-function newGenLevel() {
-	var level = 0
-	var amount = 0
+function newGenLevel(level) {
+	var amount = 1
 	if (buyGen(level, amount)) {
-		incrementerContainer = document.getElementById("incs");
+		console.log(incrementerContainer)
 		var newGenElement = document.createElement("div");
 		//create elements inside
-		var temp = []
-		temp[0] = document.createElement("p"); //0
-		temp[0].innerText = "Incrementer level " + level;
+		var temp = new DocumentFragment();
+		temp.appendChild(document.createElement("p")); //0
+		temp.childNodes[0].innerText = "Incrementer level " + level;
 		
-		temp[1] = document.createElement("br"); // 1
+		temp.appendChild(document.createElement("p")); //1, empty until upgraded
 		
-		temp[2] = document.createElement("p"); //2, empty until upgraded
+		temp.appendChild(document.createElement("button")); //2 (line break moment)
+		temp.childNodes[2].innerText = "Buy incrementer for: " + calcPrice(level, 2);
+		//temp.childNodes[2].setAttribute("data-level", level); //want to keep for later in case i need it
+		temp.childNodes[2].onclick = function() {buyGenButton(level)};
 		
-		temp[3] = document.createElement("br"); // 3
+		temp.appendChild(document.createElement("br")); //3
 		
-		temp[4] = document.createElement("button"); //4
-		temp[4].innerText = "Buy incrementer for: " + calcPrice(level, amount);
-		temp[4].setAttribute("data-level", level);
+		temp.appendChild(document.createElement("button")); //4
+		temp.childNodes[4].innerText = "Upgrade for: " + calcUpgradePrice(level, 1);
+		//temp.childNodes[4].setAttribute("data-level", level);
+		temp.childNodes[4].onclick = function() {buyUpgrade(level)};
 		
-		temp[5] = document.createElement("br"); //5
-		
-		temp[6] = document.createElement("button"); //6
-		temp[6].innerText = "Upgrade for: " + calcUpgradePrice(level, amount);
-		
-		newGenElement.appendChild(temp); //todo: test if this works or if i have to convert it to a chunk of elements, it i do, it will be a seperate function
+		console.log(temp)
+		newGenElement.appendChild(temp);
 	
 		containers.push(incrementerContainer);
 		incrementerContainer.appendChild(newGenElement);
+		maxLevel++;
+		upgradeButton.innerText = "Buy next incrementer level for: " + calcPrice(maxLevel, 1)
 	}
 }
 
-function buyGenButton() {
-	var level = 0
-	var amount = 0
+function buyUpgrade(level) { //always on a button
+	var cost = calcUpgradePrice(level, getAmounts(level)[1]); //placeholders for now
+	if (cost <= units) {
+		modifyUnits(cost * -1n);
+		incrementers[level * 2 + 1] = incrementers[level * 2 + 1] + 1;
+		incrementerContainer.childNodes[level + 1].childNodes[4].innerText = "Buy upgrade for: " + calcUpgradePrice(level, getAmounts(level)[1]);
+	}
 }
-
-function buyUpgrade() {
-	
+function buyGenButton(level) {
+	if (buyGen(level, getAmounts(level)[0])) {
+		console.log(level)
+		incrementerContainer.childNodes[level + 1].childNodes[2].innerText = "Buy incrementer for: " + calcPrice(level, getAmounts(level)[0]); //one hell of a line
+	}
 }
 
 function buyGen(level, amount) {
 	var cost = calcPrice(level, amount); //placeholders for now
 	if (cost <= units) {
+		if(!incrementers[level * 2]) {
+			incrementers[level * 2] = 0;
+			incrementers[level * 2 + 1] = 1;
+		}
+		
 		modifyUnits(cost * -1n);
 		incrementers[level * 2] = incrementers[level * 2] + 1;
 		return true;
@@ -114,11 +132,11 @@ function buyGen(level, amount) {
 }
 
 function calcPrice(level, amount) {
-	return 2n ** BigNumber(amount * level);
+	return 2n ** BigInt(amount * level);
 }
 
-function calcUpgradePrice(level, amount); {
-	return 	2n ** BigNumber(amount ** (level + 1));
+function calcUpgradePrice(level, amount) {
+	return 	2n ** BigInt(amount ** (level + 1));
 }
 
 function getAmounts(level) { //level starts at 0
